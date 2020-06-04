@@ -1,85 +1,89 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import './App.css';
+import React from 'react';
+import TodoList from './components/TodoList';
+import TodoForm from './components/TodoForm';
+import "./App.css";
 
-class App extends Component{
-  constructor(props){
-    super(props);
 
-    this.state={
-      newItem:"",
-      list:[]
-    }
+class App extends React.Component {
+  // you will need a place to store your state in this component.
+  // design `App` to be the parent component of your application.
+  // this component is going to take care of state, and any change handlers you need to work with your state
+  constructor() {
+    super();
+    this.state = {
+      todos: [
+        {
+          task: 'Clean Your Room',
+          id: 1,
+          completed: false
+        },
+        {
+          task: 'Walk Dog',
+          id: 2,
+          completed: false
+        },
+        {
+          task: 'Learn setState',
+          id: 3,
+          completed: false
+        }
+      ],
+      todo: ''
+    };
   }
-
-updateInput(key, value){
-  //update react state
-    this.setState({
-      [key]:value,
-    })
-}
-
-addItem(){
-  //create item with unique id
-  const newItem={
-    id: 1 + Math.random(),
-    value: this.state.newItem.slice()
+  // you will need a place to store your state in this component.
+  // design `App` to be the parent component of your application.
+  // this component is going to take care of state, and any change handlers you need to work with your state
+  addTodo = e => {
+    e.preventDefault();
+    const newTodo = { task: this.state.todo, completed: false, id: Date.now() };
+    this.setState({ 
+      todos: [...this.state.todos, newTodo], 
+      todo: '' 
+    });
   };
-  //copy of current list of items
-  const list = [...this.state.list];
-  // add new item to the list 
-  list.push(newItem);
-  //update the state with a new list and then reset the newItem input
-  this.setState({
-        list,
-        newItem:""
-      });
-  
+
+  changeTodo = e => this.setState({ [e.target.name]: e.target.value });
+
+  toggleTodoComplete = id => {
+    let todos = this.state.todos.slice();
+    todos = todos.map(todo => {
+      if (todo.id === id) {
+        todo.completed = !todo.completed;
+        return todo;
+      } else {
+        return todo;
+      }
+    });
+    this.setState({ todos });
+  };
+
+  clearCompletedTodos = e => {
+    e.preventDefault();
+    // let todos = this.state.todos.filter(todo => !todo.completed);
+    // this.setState({ todos });
+
+    this.setState(
+      {todos: this.state.todos.filter( todo => !todo.completed)}
+    )
+  };
+
+  render() {
+    return (
+      <div className="App">
+        <TodoList
+          handleToggleComplete={this.toggleTodoComplete}
+          todos={this.state.todos}
+        />
+        <TodoForm
+          value={this.state.todo}
+          handleTodoChange={this.changeTodo}
+          handleAddTodo={this.addTodo}
+          handleClearTodos={this.clearCompletedTodos}
+        />
+      </div>
+    );
+  }
 }
-
-
-deleteItem(id){
-  //copy current list of items
-  const list = [...this.state.list];
-  //filter out item being deleted
-  const updatedList = list.filter(item=> item.id !== id);
-  this.setState({list:updatedList});
-}
-
-render(){
-  return(
-    <div classNane="App">   
-    <div>
-      <h1> THINGS TO DO... </h1>
-      <br/>
-      <input 
-      type="text" 
-      placeholder="Add item here..."
-      value={this.state.newItem}
-      onChange={e=> this.updateInput("newItem", e.target.value)}
-      />
-
-      <button onClick={()=> this.addItem()}>Add</button>  
-
-      <ul>
-        {this.state.list.map(item=>{
-        return(
-          <li key={item.id}>
-          {item.value}
-          <button 
-            onClick={()=>
-            this.deleteItem(item.id)} className="deleteButton">
-           X
-          </button>
-          </li>
-        )} )}
-         </ul>
-
-    </div>
-  </div>
-      );  
-    
-  
-          }}
 
 export default App;
