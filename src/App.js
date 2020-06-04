@@ -64,7 +64,11 @@ class App extends React.Component {
     // this.setState({ todos });
 
     this.setState(
+<<<<<<< HEAD
       {todos: this.state.todos.filter( todo => !todo.completed)}
+=======
+      {todds: this.state.todos.filter( todo => !todo.completed)}
+>>>>>>> 19f697968755e07013d4e5c5ae597bae214207dd
     )
   };
 
